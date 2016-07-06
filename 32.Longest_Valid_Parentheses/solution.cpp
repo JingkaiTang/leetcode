@@ -22,7 +22,11 @@ int lvp(string s) {
                 if (count > 0) {
                     count --;
                     s[i] = T;
-                    *find(s.rbegin()+s.size()-1-i, s.rend(), L) = T;
+                    int j = i-1;
+                    while (s[j] != L) {
+                        j --;
+                    }
+                    s[j] = T;
                 } else {
                     break;
                 }
