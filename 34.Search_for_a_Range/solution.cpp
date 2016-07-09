@@ -4,52 +4,46 @@
 using namespace std;
 
 int searchLeft(vector<int> &nums, int l, int r) {
-    int i;
+    int i = (l+r)>>1;
     do {
-        i = (l+r)>>1;
         if (nums[r] == nums[i]) {
             r = i;
         } else {
             l = i;
         }
+        i = (l+r)>>1;
     } while (i != l);
     return nums[l] == nums[r] ? l : r;
 }
 
-int searchRight(vector<int> &nums, int r, int l) {
-    int i;
+int searchRight(vector<int> &nums, int l, int r) {
+    int i = (l+r)>>1;
     do {
-        i = (l+r)>>1;
-        if (nums[l] == nums[r]) {
+        if (nums[l] == nums[i]) {
             l = i;
         } else {
             r = i;
         }
+        i = (l+r)>>1;
     } while (i != l);
     return nums[r] == nums[l] ? r : l;
 }
 
 vector<int> searchRange(vector<int> &nums, int target) {
-    vector<int> ret;
-
     if (nums.size() == 0 || target < nums.front() || target > nums.back()) {
-        return ret;
+        return {-1, -1};
     }
 
     int l = 0;
     int r = nums.size()-1;
-
-    int i;
     
-    if (target == nums[0]) {
-        i = 0;
-        r = searchRight(nums, r, i);
+    if (target == nums[l]) {
+        r = searchRight(nums, l, r);
     } else if (target == nums[r]) {
-        i = r;
-        l = searchLeft(nums, l, i);
+        l = searchLeft(nums, l, r);
     } else {
+        int i = (r+l)>>1;
         do {
-            i = (r+l)>>1;
             if (target < nums[i]) {
                 r = i;
             } else if (target > nums[i]) {
@@ -57,21 +51,19 @@ vector<int> searchRange(vector<int> &nums, int target) {
             } else {
                 break;
             }
+            i = (r+l)>>1;
         } while (i != l && i != r);
 
         if (target != nums[i]) {
-            r = 0;
-            l = 1;
+            r = -1;
+            l = -1;
         } else {
             l = searchLeft(nums, l, i);
-            r = searchRight(nums, r, i);
+            r = searchRight(nums, i, r);
         }
     }
 
-    for (int j = l; j <= r; j ++) {
-        ret.push_back(j);
-    }
-    return ret;
+    return {l, r};
 }
 
 void print(vector<int> &nums) {
@@ -89,6 +81,7 @@ int main() {
     cout << "find " << 8 << endl;
 
     auto ret = searchRange(nums, 8);   
+    cout << "result:" << endl;
     print(ret);
 
     return 0;
