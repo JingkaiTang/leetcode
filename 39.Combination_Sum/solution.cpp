@@ -13,32 +13,35 @@ public:
 
         sort(candidates.begin(), candidates.end(), greater<int>());
        
-        auto it = candidates.begin();
-        while (*it > target) {
-           ++it;
-        } 
-        
-        return combinationSum(it, candidates.end(), target);
+        return combinationSum(candidates.begin(), candidates.end(), target);
     }
 
     vector<vector<int>> combinationSum(vector<int>::iterator it, vector<int>::iterator end, int target) {
         if (it == end) {
-            return {{}};
+            return {};
+        }
+
+        if (*it > target) {
+            return combinationSum(++it, end, target);
         }
 
         if (*it == target) {
-            return {{target}};
-        }
-        
-        if (*it < target) {
-            auto result = combinationSum(++it, end, target-*it);
-            for (auto r: result) {
-                r.push_back(*it);
-            }
+            auto result = combinationSum(++it, end, target);
+            result.push_back({target});
             return result;
         }
 
-        return {{}};
+        if (*it < target) {
+            auto result = combinationSum(it, end, target-*it);
+            for (auto &r: result) {
+                r.push_back(*it);
+            }
+            auto result2 = combinationSum(++it, end, target);
+            result.insert(result.end(), result2.begin(), result2.end());
+            return result;
+        }
+        
+        return {};
     }
 };
 
